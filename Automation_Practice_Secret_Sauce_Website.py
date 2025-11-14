@@ -2,9 +2,15 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.edge.service import Service
 import time
 
+# ============================================================
+# BROWSER SELECTION - CHANGE THIS TO TEST DIFFERENT BROWSERS
+# ============================================================
+BROWSER = "edge"  # Options: "chrome", "edge", "firefox", "safari"
+
+
+# ============================================================
 
 # Helper function to type text character by character (human-like typing)
 def human_type(element, text, delay=0.1):
@@ -29,25 +35,58 @@ def highlight_element(driver, element, color="blue", duration=1):
     )
 
 
-# Initialize Edge driver with options
-edge_options = webdriver.EdgeOptions()
+# Initialize browser driver based on selection
+def initialize_browser(browser_name):
+    """Initialize the selected browser with appropriate options"""
+    browser_name = browser_name.lower()
 
-# Disable password manager prompts
-edge_options.add_experimental_option('prefs', {
-    'credentials_enable_service': False,
-    'profile.password_manager_enabled': False
-})
+    if browser_name == "chrome":
+        print("🌐 Initializing Google Chrome...")
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_experimental_option('prefs', {
+            'credentials_enable_service': False,
+            'profile.password_manager_enabled': False
+        })
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        driver = webdriver.Chrome(options=chrome_options)
 
-# Disable automation flags
-edge_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-edge_options.add_experimental_option('useAutomationExtension', False)
+    elif browser_name == "edge":
+        print("🌐 Initializing Microsoft Edge...")
+        edge_options = webdriver.EdgeOptions()
+        edge_options.add_experimental_option('prefs', {
+            'credentials_enable_service': False,
+            'profile.password_manager_enabled': False
+        })
+        edge_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        driver = webdriver.Edge(options=edge_options)
 
-driver = webdriver.Edge(options=edge_options)
-driver.maximize_window()
+    elif browser_name == "firefox":
+        print("🌐 Initializing Mozilla Firefox...")
+        firefox_options = webdriver.FirefoxOptions()
+        # Firefox doesn't have the same password manager issues
+        driver = webdriver.Firefox(options=firefox_options)
+
+    elif browser_name == "safari":
+        print("🌐 Initializing Safari...")
+        # Safari requires enabling "Allow Remote Automation" in Develop menu
+        driver = webdriver.Safari()
+
+    else:
+        raise ValueError(f"Unsupported browser: {browser_name}. Choose from: chrome, edge, firefox, safari")
+
+    driver.maximize_window()
+    return driver
+
+
+# Initialize the selected browser
+print(f"\n>>> Selected Browser: {BROWSER.upper()} <<<\n")
+driver = initialize_browser(BROWSER)
 
 try:
     print("=" * 60)
-    print("   SAUCEDEMO AUTOMATION - PROFESSIONAL DEMO MODE")
+    print(f"   SAUCEDEMO AUTOMATION - PROFESSIONAL DEMO MODE")
+    print(f"   Browser: {BROWSER.upper()}")
     print("=" * 60)
 
     # Navigate to the website
@@ -178,7 +217,7 @@ try:
 
     # Highlight and type zip code
     highlight_element(driver, zip_code, "green", 0.8)
-    human_type(zip_code, "98012", 0.1)
+    human_type(zip_code, "90210", 0.1)
     time.sleep(1.2)
     print("    ✓ Information entered: Bryan Green, 98012")
 
@@ -193,7 +232,7 @@ try:
     # Click finish button on overview page
     print("[12/15] Clicking finish to complete order...")
     finish_button = wait.until(EC.element_to_be_clickable((By.ID, "finish")))
-    highlight_element(driver, finish_button, "green", 1.2)
+    highlight_element(driver, finish_button, "gold", 1.2)
     finish_button.click()
     time.sleep(3)
     print("    ✓ Order completed!")
