@@ -3,7 +3,7 @@
 Professional end-to-end automation testing of the SauceDemo e-commerce platform using Selenium WebDriver and Python.
 
 ## 🎥 Watch Demo
-[▶️ Copy the link to watch the full automation demo (1 min. 40 sec.)]  https://www.loom.com/share/dc7bf490fa6b46b09f89202a77734db7
+[▶️ Click the link to watch the full automation demo (1 min. 40 sec.)]  https://www.loom.com/share/dc7bf490fa6b46b09f89202a77734db7
 
 > *See the automation in action with visual element highlighting and human-like interactions!*
 
